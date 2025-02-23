@@ -47,6 +47,7 @@ onMounted(() => {
 
     <!-- Hero -->
     <section
+      id="hero"
       class="relative flex h-screen items-center justify-center bg-cover bg-fixed bg-center text-white"
       :style="{ backgroundImage: `url(${autobuses})` }"
     >
