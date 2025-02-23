@@ -19,14 +19,14 @@
       </p>
     </div>
     <div class="mx-20 mt-10 grid grid-cols-1 gap-10 md:grid-cols-3">
-      <div class="rounded-lg bg-gradient-to-r from-blue-800 to-purple-900 p-6 text-white shadow-lg">
+      <div class="rounded-lg bg-gradient-to-tl from-green-900 to-blue-800 p-6 text-white shadow-lg">
         <h3 class="mb-4 text-3xl font-semibold">Misión</h3>
         <p>
           Ser una plataforma que facilite el acceso a información del transporte público, mejorando
           la experiencia de viaje de los usuarios.
         </p>
       </div>
-      <div class="rounded-lg bg-gradient-to-r from-green-800 to-teal-950 p-6 text-white shadow-lg">
+      <div class="rounded-lg bg-gradient-to-tl from-green-900 to-blue-800 p-6 text-white shadow-lg">
         <h3 class="mb-4 text-3xl font-semibold">Valores</h3>
         <ul class="list-disc pl-5">
           <li>Compromiso</li>
@@ -35,7 +35,7 @@
           <li>Responsabilidad</li>
         </ul>
       </div>
-      <div class="rounded-lg bg-gradient-to-r from-red-900 to-pink-900 p-6 text-white shadow-lg">
+      <div class="rounded-lg bg-gradient-to-tl from-green-900 to-blue-800 p-6 text-white shadow-lg">
         <h3 class="mb-4 text-3xl font-semibold">Visión</h3>
         <p>
           Ser la plataforma líder en información de transporte público, reconocida por su precisión
