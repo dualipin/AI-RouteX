@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-tl from-blue-900 via-slate-900 to-green-900 p-4 pt-40">
+  <div class="min-h-screen bg-gradient-to-tl from-black to-blue-950 p-4 pt-40">
     <div class="container mx-auto">
       <div class="flex items-center justify-between">
         <h1 class="text-3xl font-bold text-white">Horarios</h1>
