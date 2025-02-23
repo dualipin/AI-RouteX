@@ -60,7 +60,7 @@ onMounted(() => {
         </p>
         <RouterLink
           to="schedule"
-          class="mt-6 inline-block rounded-lg bg-blue-400 px-6 py-3 font-semibold text-white shadow-lg transition hover:bg-blue-600"
+          class="mt-6 inline-block rounded-lg bg-blue-500 px-6 py-3 text-lg font-semibold text-white shadow-lg transition hover:bg-gradient-to-br hover:from-blue-500 hover:to-blue-700 md:text-base"
         >
           Echar un vistazo
         </RouterLink>

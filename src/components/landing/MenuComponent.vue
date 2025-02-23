@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
-const isScrolled = ref(false)
-const route = useRoute()
-
-onMounted(() => {
-  window.addEventListener('scroll', () => {
-    isScrolled.value = window.scrollY > 50
-  })
+defineProps({
+  isScrolled: {
+    type: Boolean,
+    required: true,
+  },
 })
+
+const route = useRoute()
 </script>
 
 <template>
@@ -17,7 +16,7 @@ onMounted(() => {
     :class="[
       'fixed z-50 transform px-2 transition-all duration-700',
       isScrolled
-        ? 'inset-x-10 top-1.5 rounded-xl bg-blue-500/50 py-1 shadow-lg backdrop-blur-lg md:px-5'
+        ? 'inset-x-3 top-1.5 rounded-xl bg-blue-500/50 py-2 shadow-lg backdrop-blur-lg md:inset-x-10 md:px-5 md:py-1'
         : route.path === '/'
           ? 'inset-x-0 top-0 bg-transparent py-4 md:px-36'
           : 'inset-x-0 top-0 bg-current py-4 md:px-36',
@@ -27,8 +26,8 @@ onMounted(() => {
       <RouterLink to="/" class="text-2xl font-bold text-white">
         <span class="rounded-md bg-white px-2 text-black">AI</span> RouteX
       </RouterLink>
-      <input type="checkbox" id="menuToggle" class="peer hidden" checked />
-      <label for="menuToggle" class="text-white focus:outline-none md:hidden">
+      <input type="checkbox" id="menuToggle" class="peer hidden" />
+      <label for="menuToggle" class="cursor-pointer text-white focus:outline-none md:hidden">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-6 w-6"
@@ -45,7 +44,7 @@ onMounted(() => {
         </svg>
       </label>
       <nav
-        class="bg-onyx-black/95 absolute top-14 hidden w-full justify-center space-x-6 rounded-2xl p-2 text-lg font-bold opacity-0 transition-all peer-checked:flex peer-checked:opacity-100 md:relative md:top-0 md:flex md:w-auto md:bg-transparent md:px-4 md:opacity-100"
+        class="absolute top-11 left-0 hidden w-full -translate-x-full transform flex-col items-center space-y-4 rounded-2xl bg-current p-2 text-lg font-bold opacity-0 shadow-2xl transition-all duration-500 peer-checked:flex peer-checked:translate-x-0 peer-checked:opacity-100 md:relative md:top-0 md:flex md:w-auto md:translate-x-0 md:flex-row md:space-y-0 md:space-x-6 md:bg-transparent md:px-4 md:opacity-100 md:shadow-none"
       >
         <a href="/#hero" class="text-white hover:underline">Inicio</a>
         <a href="/#services" class="text-white hover:underline">Paradas</a>
