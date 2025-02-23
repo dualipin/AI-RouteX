@@ -5,7 +5,16 @@ import driverRoutes from './driver.routes'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [...landingRoutes, ...adminRoutes, ...driverRoutes],
+  routes: [
+    ...landingRoutes,
+    ...adminRoutes,
+    ...driverRoutes,
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
+      component: () => import('@/views/NotFoundView.vue'),
+    },
+  ],
 })
 
 export default router
