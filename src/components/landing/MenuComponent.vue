@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
 
 const isScrolled = ref(false)
+const route = useRoute()
 
 onMounted(() => {
   window.addEventListener('scroll', () => {
@@ -16,7 +18,9 @@ onMounted(() => {
       'fixed z-50 transform px-2 transition-all duration-700',
       isScrolled
         ? 'inset-x-10 top-1.5 rounded-xl bg-blue-500/50 py-1 shadow-lg backdrop-blur-lg md:px-5'
-        : 'inset-x-0 top-0 bg-transparent py-4 md:px-36',
+        : route.path === '/'
+          ? 'inset-x-0 top-0 bg-transparent py-4 md:px-36'
+          : 'inset-x-0 top-0 bg-current py-4 md:px-36',
     ]"
   >
     <div class="relative flex items-center justify-between transition-all duration-300">

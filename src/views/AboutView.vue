@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-tl from-black to-blue-950 pt-26 text-white">
+  <div class="min-h-screen bg-gradient-to-tl pt-26">
     <div class="container mx-auto p-4 text-center text-lg">
       <h1 class="text-center text-4xl font-bold">¿Quienes Somos?</h1>
       <p class="mt-3 text-lg">
