@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import autobuses from '@/assets/img/giorgio-trovato-mDX3l3BvccU-unsplash.jpg'
+import HeroComponent from '@/components/landing/HeroComponent.vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const isScrolled = ref(false)
 const services = ref([
@@ -21,23 +21,16 @@ const services = ref([
   },
 ])
 
-const ballena = ref('🐋')
-
-function toggleBallena() {
-  if (ballena.value == '🐋') {
-    ballena.value = '🐳'
-  } else {
-    ballena.value = '🐋'
-  }
-
-  console.log(ballena.value)
+const handleScroll = () => {
+  isScrolled.value = window.scrollY > 50
 }
 
 onMounted(() => {
-  setInterval(toggleBallena, 1000)
-  window.addEventListener('scroll', () => {
-    isScrolled.value = window.scrollY > 50
-  })
+  window.addEventListener('scroll', handleScroll)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
 })
 </script>
 
@@ -46,26 +39,7 @@ onMounted(() => {
     <!-- Navbar -->
 
     <!-- Hero -->
-    <section
-      id="hero"
-      class="relative flex h-screen items-center justify-center bg-cover bg-fixed bg-center text-white"
-      :style="{ backgroundImage: `url(${autobuses})` }"
-    >
-      <div class="absolute inset-0 bg-black/85"></div>
-      <div class="relative z-10 text-center">
-        <h2 class="text-6xl font-bold">Que no se te pase la combi!!!</h2>
-        <p class="mt-4 text-2xl">
-          Checa fácilmente los horarios del transporte, si va llena {{ ballena }} o si la tienes que
-          esperar en otra parte.
-        </p>
-        <RouterLink
-          to="schedule"
-          class="mt-6 inline-block rounded-lg bg-blue-500 px-6 py-3 text-lg font-semibold text-white shadow-lg transition hover:bg-gradient-to-br hover:from-blue-500 hover:to-blue-700 md:text-base"
-        >
-          Echar un vistazo
-        </RouterLink>
-      </div>
-    </section>
+    <HeroComponent />
 
     <!-- Servicios -->
     <section id="services" class="container mx-auto px-4 py-16">

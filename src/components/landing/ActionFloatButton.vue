@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 defineProps({
   isScrolled: {
@@ -10,6 +10,8 @@ defineProps({
 })
 
 const route = useRoute()
+const router = useRouter()
+
 const bottomOffset = ref('5px')
 
 const handleScroll = () => {
@@ -32,7 +34,7 @@ onUnmounted(() => {
 })
 
 const handleClick = () => {
-  console.log('Floating action button clicked')
+  router.push('/schedule')
 }
 </script>
 
