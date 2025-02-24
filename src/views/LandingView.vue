@@ -41,7 +41,7 @@ onUnmounted(() => {
     <!-- Hero -->
     <HeroComponent />
 
-    <!-- Servicios -->
+    <!-- Principales Paradas -->
     <section id="services" class="container mx-auto px-4 py-16">
       <h2 class="mb-10 text-center text-4xl font-semibold text-gray-700">Principales Paradas</h2>
       <div class="grid gap-8 md:grid-cols-3">
@@ -60,7 +60,7 @@ onUnmounted(() => {
       </div>
     </section>
 
-    <!-- Testimonios -->
+    <!-- Principales Rutas -->
     <section
       id="testimonials"
       class="mx-4 rounded-4xl bg-gradient-to-tl from-green-200 to-blue-800 py-16 text-white shadow-2xl shadow-blue-200"

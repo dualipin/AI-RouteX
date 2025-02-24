@@ -1,87 +1,157 @@
 <template>
-  <div class="min-h-screen bg-neutral-50 bg-gradient-to-tl p-4 pt-40 text-black">
-    <div class="container mx-auto">
-      <h1 class="mb-4 text-3xl font-bold">Horarios</h1>
-      <p class="mb-6 text-lg text-gray-900">Horarios de los conductores</p>
-      <h2 class="mb-4 text-2xl font-semibold">Transportes próximos a salir</h2>
-      <ul class="list-disc px-4">
-        <li
-          v-for="(transporte, index) in transportes"
-          :key="index"
-          class="mb-2 flex flex-col items-start justify-between rounded border border-neutral-200 bg-white p-2 shadow-sm md:flex-row md:items-center"
+  <div
+    class="relative min-h-screen bg-gray-100 p-6 pt-24 text-gray-900 dark:bg-gray-900 dark:text-white"
+  >
+    <div class="container mx-auto max-w-5xl">
+      <!-- Título -->
+      <h1 class="mb-4 text-center text-3xl font-bold">🛣️ Ruta a la Parada de Autobús</h1>
+      <p class="mb-6 text-center text-lg text-gray-700 dark:text-gray-300">
+        Selecciona una parada de autobús y traza la mejor ruta desde tu ubicación.
+      </p>
+
+      <!-- Mapa -->
+      <div ref="mapContainer" class="h-96 w-full rounded-lg shadow-lg"></div>
+
+      <!-- Selección de Parada -->
+      <div class="mt-4 flex justify-center">
+        <select v-model="selectedStop" class="rounded border p-2 shadow-md">
+          <option v-for="(stop, index) in busStops" :key="index" :value="stop">
+            🚏 {{ stop.name }}
+          </option>
+        </select>
+        <button
+          @click="calcularRuta"
+          class="ml-4 rounded bg-blue-600 px-4 py-2 text-white shadow-lg hover:bg-blue-700"
         >
-          <div class="mb-2 md:mb-0">
-            <span class="font-semibold">{{ transporte.nombre }}</span> - {{ transporte.hora }}
-          </div>
-          <div class="flex flex-col md:flex-row">
-            <button
-              @click="viewDetails(transporte)"
-              class="mb-2 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 md:mr-2 md:mb-0"
-            >
-              <i class="bi bi-eye"></i> Ver Detalles
-            </button>
-            <button
-              @click="deleteTransporte(index)"
-              class="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
-            >
-              <i class="bi bi-trash"></i> Eliminar
-            </button>
-          </div>
-        </li>
-      </ul>
-      <div v-if="loading" class="mt-6 flex justify-center">
-        <LoadingSpinner />
-      </div>
-      <div v-if="selectedTransporte" class="mt-6 rounded border bg-white p-4 shadow-lg">
-        <h3 class="mb-2 text-xl font-bold text-green-600">Detalles del Transporte</h3>
-        <p><strong>Nombre:</strong> {{ selectedTransporte.nombre }}</p>
-        <p><strong>Hora:</strong> {{ selectedTransporte.hora }}</p>
-        <p><strong>Ruta:</strong> {{ selectedTransporte.ruta }}</p>
-        <button @click="closeDetails" class="mt-4 rounded bg-red-500 px-4 py-2 text-white">
-          <i class="bi bi-x-circle"></i> Cerrar
+          🚀 Trazar Ruta
         </button>
       </div>
+
+      <!-- Mensaje de error -->
+      <p v-if="error" class="mt-4 text-center font-semibold text-red-600">⚠️ {{ error }}</p>
     </div>
   </div>
 </template>
 
-<script lang="ts" setup>
-import LoadingSpinner from '@/components/LoadingSpinner.vue'
-import { ref } from 'vue'
+<script setup lang="ts">
+import { ref, onMounted, watch } from 'vue'
+import maplibregl from 'maplibre-gl'
+import { useGeolocation } from '@vueuse/core'
+import 'maplibre-gl/dist/maplibre-gl.css'
 
-interface Transporte {
-  nombre: string
-  hora: string
-  ruta: string
+// 📌 Referencia al contenedor del mapa
+const mapContainer = ref<HTMLDivElement | null>(null)
+let map: maplibregl.Map | null = null
+const error = ref<string | null>(null)
+
+// 📡 **Ubicación del usuario con VueUse**
+const { coords, error: geoError } = useGeolocation({ enableHighAccuracy: true, timeout: 10000 })
+const userLocation = ref<[number, number] | null>(null)
+
+// 🚌 **Lista de Paradas de Autobús (predefinidas en el sistema)**
+const busStops = ref([
+  // { name: 'Parada Centro', location: [-99.1332, 19.4326] },
+  // { name: 'Parada Norte', location: [-99.15, 19.45] },
+  // { name: 'Parada Sur', location: [-99.14, 19.41] },
+  { name: 'Parada de la Central', location: [-92.59862992550441, 17.761141425690145] },
+  { name: 'La Placita', location: [-92.59056441127062, 17.75730486967917] },
+  { name: 'Cdad. Pemex', location: [-92.47882281097421, 17.884389215749614] },
+])
+// 📍 **Parada seleccionada**
+const selectedStop = ref(busStops.value[0])
+
+// 📌 Inicializar el mapa
+onMounted(() => {
+  map = new maplibregl.Map({
+    container: mapContainer.value as HTMLElement,
+    style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json', // OpenStreetMap con Carto
+    center: selectedStop.value.location,
+    zoom: 14,
+  })
+
+  // Agregar marcadores de paradas de autobús
+  busStops.value.forEach((stop) => {
+    new maplibregl.Marker({ color: 'blue' })
+      .setLngLat(stop.location)
+      .setPopup(new maplibregl.Popup().setText(`🚌 ${stop.name}`))
+      .addTo(map)
+  })
+
+  // Observar cambios en la geolocalización
+  watch(coords, (newCoords) => {
+    if (newCoords.latitude && newCoords.longitude) {
+      userLocation.value = [newCoords.longitude, newCoords.latitude]
+      error.value = null
+
+      // Agregar marcador de la ubicación del usuario
+      new maplibregl.Marker({ color: 'red' })
+        .setLngLat(userLocation.value)
+        .setPopup(new maplibregl.Popup().setText('📍 Tú estás aquí'))
+        .addTo(map)
+
+      map?.setCenter(userLocation.value)
+    }
+  })
+
+  // Manejar errores de geolocalización
+  watch(geoError, (err) => {
+    if (err) {
+      error.value = 'No se pudo obtener la ubicación. Activa el GPS y revisa los permisos.'
+    }
+  })
+})
+
+// 🚀 **Calcular Ruta con OSRM**
+async function calcularRuta() {
+  if (!userLocation.value) {
+    error.value = '⚠️ No se pudo obtener tu ubicación. Intenta nuevamente.'
+    return
+  }
+
+  // Endpoint de OSRM para calcular rutas
+  const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${userLocation.value.join(',')};${selectedStop.value.location.join(',')}?overview=full&geometries=geojson`
+
+  try {
+    const response = await fetch(osrmUrl)
+    const data = await response.json()
+
+    if (data.routes.length === 0) {
+      error.value = 'No se pudo calcular la ruta. Intenta otra parada.'
+      return
+    }
+
+    const routeGeoJSON = {
+      type: 'Feature',
+      geometry: data.routes[0].geometry,
+    }
+
+    // Verificar si ya existe una ruta previa en el mapa y reemplazarla
+    if (map?.getSource('route')) {
+      map.getSource('route')?.setData(routeGeoJSON)
+    } else {
+      map?.addSource('route', { type: 'geojson', data: routeGeoJSON })
+
+      map?.addLayer({
+        id: 'route-line',
+        type: 'line',
+        source: 'route',
+        paint: {
+          'line-color': '#ff5733',
+          'line-width': 4,
+        },
+      })
+    }
+
+    userLocation.value = [17.778426700008495, -92.60517512806771]
+
+    // Ajustar el zoom para ver la ruta completa
+    const bounds = new maplibregl.LngLatBounds()
+    bounds.extend(userLocation.value)
+    bounds.extend(selectedStop.value.location)
+    map?.fitBounds(bounds, { padding: 50 })
+  } catch (err) {
+    console.error('Error al obtener la ruta:', err)
+    error.value = 'Error al calcular la ruta. Intenta nuevamente.'
+  }
 }
-
-const transportes = ref<Transporte[]>()
-const loading = ref(true)
-const selectedTransporte = ref<Transporte | null>()
-
-function fetchHorarios() {
-  // Simulate an API call
-  setTimeout(() => {
-    transportes.value = [
-      { nombre: 'Transporte 1', hora: '10:00 AM', ruta: 'Ruta 1' },
-      { nombre: 'Transporte 2', hora: '11:00 AM', ruta: 'Ruta 2' },
-      { nombre: 'Transporte 3', hora: '12:00 PM', ruta: 'Ruta 3' },
-    ]
-    loading.value = false
-  }, 3000)
-}
-
-function viewDetails(transporte: Transporte) {
-  selectedTransporte.value = transporte
-}
-
-function closeDetails() {
-  selectedTransporte.value = null
-}
-
-function deleteTransporte(index: number) {
-  transportes.value?.splice(index, 1)
-}
-
-fetchHorarios()
 </script>

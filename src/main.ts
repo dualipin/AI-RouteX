@@ -1,5 +1,7 @@
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import './assets/main.css'
+import 'leaflet/dist/leaflet.css'
+import 'leaflet'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
